@@ -1,4 +1,4 @@
-<%@ page import="org.youcode.DevSync.modals.User" %>
+<%@ page import="org.youcode.DevSync.domain.entities.User" %>
 <%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
@@ -48,11 +48,11 @@
                     </span>
                 <h3>Users</h3>
             </a>
-            <a href="partners.html" >
+            <a href="/DevSync/TagCrud" >
                     <span class="material-icons-sharp">
                         business
                     </span>
-                <h3>Tasks</h3>
+                <h3>Tags</h3>
             </a>
             <a href="Requests.html">
                     <span class="material-icons-sharp">

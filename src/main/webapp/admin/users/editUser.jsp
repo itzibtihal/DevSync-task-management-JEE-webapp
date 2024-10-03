@@ -5,9 +5,9 @@
   Time: 15:40
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page import="org.youcode.DevSync.modals.User" %>
+<%@ page import="org.youcode.DevSync.domain.entities.User" %>
 <%@ page import="java.util.UUID" %>
-<%@ page import="org.youcode.DevSync.modals.Role" %>
+<%@ page import="org.youcode.DevSync.domain.enums.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">

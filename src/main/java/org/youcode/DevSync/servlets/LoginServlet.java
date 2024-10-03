@@ -5,9 +5,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.youcode.DevSync.dao.UserDAO;
+import org.youcode.DevSync.dao.interfaces.UserDAO;
 import org.youcode.DevSync.dao.impl.UserDAOImpl;
-import org.youcode.DevSync.modals.User;
+import org.youcode.DevSync.domain.entities.User;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,7 +17,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Set attributes or any other logic you need for the initial login page
+
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 

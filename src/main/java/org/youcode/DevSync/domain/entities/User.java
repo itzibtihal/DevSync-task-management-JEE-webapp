@@ -1,8 +1,9 @@
-package org.youcode.DevSync.modals;
+package org.youcode.DevSync.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.youcode.DevSync.domain.enums.Role;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -38,6 +38,17 @@
         <url-pattern>/admin</url-pattern>
     </servlet-mapping>
 
+
+    <servlet>
+        <servlet-name>TagCrudServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crud.TagCrudServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>TagCrudServlet</servlet-name>
+        <url-pattern>/TagCrud</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>ManagerServlet</servlet-name>
         <servlet-class>org.youcode.DevSync.servlets.users.ManagerServlet</servlet-class>
@@ -66,7 +77,7 @@
         </taglib>
     </jsp-config>
 
-    <!-- Welcome Page (optional) -->
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

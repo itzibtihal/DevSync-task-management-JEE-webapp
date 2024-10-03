@@ -5,9 +5,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
-import org.youcode.DevSync.dao.UserDAO;
-import org.youcode.DevSync.modals.Role;
-import org.youcode.DevSync.modals.User;
+import org.youcode.DevSync.dao.interfaces.UserDAO;
+import org.youcode.DevSync.domain.enums.Role;
+import org.youcode.DevSync.domain.entities.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +27,8 @@ public class UserDAOImpl implements UserDAO {
         try {
             em.getTransaction().begin();
             if (user.getId() != null) {
-                // If the user already exists, merge it
                 user = em.merge(user);
             } else {
-                // If it's a new user, persist it
                 em.persist(user);
             }
             em.getTransaction().commit();
@@ -38,7 +36,7 @@ public class UserDAOImpl implements UserDAO {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            throw e; // or handle it in some way
+            throw e;
         } finally {
             em.close();
         }
