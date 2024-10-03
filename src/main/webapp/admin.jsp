@@ -52,7 +52,7 @@
                     <span class="material-icons-sharp">
                         business
                     </span>
-                <h3>Partners</h3>
+                <h3>Tasks</h3>
             </a>
             <a href="Requests.html">
                     <span class="material-icons-sharp">
@@ -167,7 +167,7 @@
                     for (User recentUser : recentUsers) {
                 %>
                 <div class="user">
-                    <img src="images/profile-placeholder.jpg"> <!-- Add actual image path -->
+                    <img src="img/profile.png"> <!-- Add actual image path -->
                     <h2><%= recentUser.getFirstName() %> <%= recentUser.getLastName() %></h2>
                     <p><%= recentUser.getEmail() %></p>
 
@@ -228,7 +228,7 @@
                     <small class="text-muted">Admin</small>
                 </div>
                 <div class="profile-photo">
-                    <img src="images/profile-1.jpg">
+                    <img src="img/profile.png">
                 </div>
             </div>
 
