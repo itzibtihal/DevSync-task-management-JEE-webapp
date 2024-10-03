@@ -17,7 +17,7 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> recentUsers = userDAO.findRecentUsers(4);
+        List<User> recentUsers = userDAO.findRecentUsers(3);
         request.setAttribute("recentUsers", recentUsers);
         request.getRequestDispatcher("admin.jsp").forward(request, response);
     }

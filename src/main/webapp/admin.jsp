@@ -1,5 +1,8 @@
 <%@ page import="org.youcode.DevSync.modals.User" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.Duration" %>
+<%@ page import="java.time.format.DateTimeFormatter" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
   Date: 01/10/2024
@@ -52,7 +55,7 @@
                     <span class="material-icons-sharp">
                         business
                     </span>
-                <h3>Partners</h3>
+                <h3>Tasks</h3>
             </a>
             <a href="Requests.html">
                     <span class="material-icons-sharp">
@@ -167,15 +170,19 @@
                     for (User recentUser : recentUsers) {
                 %>
                 <div class="user">
-                    <img src="images/profile-placeholder.jpg"> <!-- Add actual image path -->
+                    <img src="img/profile.png"> <!-- Add actual image path -->
                     <h2><%= recentUser.getFirstName() %> <%= recentUser.getLastName() %></h2>
                     <p><%= recentUser.getEmail() %></p>
-
                 </div>
                 <%
                         }
                     }
                 %>
+                <div class="user">
+                    <img src="img/plus.png">
+                    <h2>More</h2>
+                    <a href="cruduser?action=add">New Artists</a>
+                </div>
             </div>
         </div>
 
@@ -228,7 +235,7 @@
                     <small class="text-muted">Admin</small>
                 </div>
                 <div class="profile-photo">
-                    <img src="images/profile-1.jpg">
+                    <img src="img/profile.png">
                 </div>
             </div>
 

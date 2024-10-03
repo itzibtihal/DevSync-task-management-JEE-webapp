@@ -36,7 +36,7 @@
         </div>
 
         <div class="sidebar">
-            <a href="#" >
+            <a href="/DevSync/admin" >
                     <span class="material-icons-sharp">
                         dashboard
                     </span>
@@ -52,7 +52,7 @@
                     <span class="material-icons-sharp">
                         business
                     </span>
-                <h3>Partners</h3>
+                <h3>Tasks</h3>
             </a>
             <a href="Requests.html">
                     <span class="material-icons-sharp">
@@ -114,7 +114,7 @@
                     for (User manager : managers) {
                 %>
                 <div class="user">
-                    <img src="images/profile-placeholder.jpg"> <!-- Add actual image path -->
+                    <img src="img/profile.png"> <!-- Add actual image path -->
                     <h2><%= manager.getFirstName() %> <%= manager.getLastName() %></h2>
                     <p><%= manager.getEmail() %></p>
 
@@ -151,7 +151,7 @@
                         for (User user : users) {
                 %>
                 <tr>
-                    <td><img src="images/profile-placeholder.jpg" alt="Profile"></td> <!-- Add actual image path -->
+                    <td><img src="img/profile.png" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%"></td> <!-- Add actual image path -->
                     <td><%= user.getFirstName() %> <%= user.getLastName() %></td>
                     <td><%= user.getEmail() %></td>
                     <td><%= user.getRole() %></td>
@@ -205,7 +205,7 @@
                     <small class="text-muted">Admin</small>
                 </div>
                 <div class="profile-photo">
-                    <img src="images/profile-1.jpg">
+                    <img src="img/profile.png">
                 </div>
             </div>
 
