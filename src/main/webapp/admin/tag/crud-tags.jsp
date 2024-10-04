@@ -21,7 +21,7 @@
         .tag-input {
             border: 36px solid #ffffff;
             padding: 10px;
-            width: calc(100% - 92px); /* Adjust width to account for padding and border */
+            width: calc(100% - 92px);
             box-sizing: border-box;
             border-radius: 38px;
         }
@@ -82,7 +82,7 @@
                     <span class="material-icons-sharp">
                         receipt_long
                     </span>
-                <h3>Requests</h3>
+                <h3>Tasks</h3>
             </a>
 
             <a href="#">

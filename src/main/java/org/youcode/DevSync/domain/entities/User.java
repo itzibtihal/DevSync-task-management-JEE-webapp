@@ -3,6 +3,7 @@ package org.youcode.DevSync.domain.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.mindrot.jbcrypt.BCrypt;
 import org.youcode.DevSync.domain.enums.Role;
 
 import java.time.LocalDateTime;
@@ -42,5 +43,14 @@ public class User {
         this.created_at = LocalDateTime.now();
         this.deleted_at = null;
     }
+
+    public void setPassword(String password) {
+        this.password = hashPassword(password);
+    }
+
+    private String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
 
 }

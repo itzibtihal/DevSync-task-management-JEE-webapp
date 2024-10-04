@@ -124,13 +124,12 @@ public class UserDAOImpl implements UserDAO {
 
 
     @Override
-    public Optional<User> findByUsernameAndPassword(String username, String password) {
+    public Optional<User> findByUsernameAndPassword(String username) {
         EntityManager em = entityManagerFactory.createEntityManager();
         try {
-            String jpql = "SELECT u FROM User u WHERE u.username = :username AND u.password = :password";
+            String jpql = "SELECT u FROM User u WHERE u.username = :username";
             return em.createQuery(jpql, User.class)
                     .setParameter("username", username)
-                    .setParameter("password", password)
                     .getResultList()
                     .stream()
                     .findFirst();

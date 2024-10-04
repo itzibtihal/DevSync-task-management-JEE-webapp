@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.mindrot.jbcrypt.BCrypt;
 import org.youcode.DevSync.dao.interfaces.UserDAO;
 import org.youcode.DevSync.dao.impl.UserDAOImpl;
 import org.youcode.DevSync.domain.entities.User;
@@ -17,7 +18,6 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
@@ -26,31 +26,35 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // Check username and password
-        Optional<User> optionalUser = userDAO.findByUsernameAndPassword(username, password);
+        Optional<User> optionalUser = userDAO.findByUsernameAndPassword(username);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
 
-            // Redirect based on role
-            switch (user.getRole()) {
-                case ADMIN:
-                    response.sendRedirect("admin");
-                    break;
-                case MANAGER:
-                    response.sendRedirect("manager");
-                    break;
-                case USER:
-                    response.sendRedirect("user");
-                    break;
-                default:
-                    response.sendRedirect("error");
-                    break;
+            if (BCrypt.checkpw(password, user.getPassword())) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+
+                switch (user.getRole()) {
+                    case ADMIN:
+                        response.sendRedirect("admin");
+                        break;
+                    case MANAGER:
+                        response.sendRedirect("manager");
+                        break;
+                    case USER:
+                        response.sendRedirect("user");
+                        break;
+                    default:
+                        response.sendRedirect("error");
+                        break;
+                }
+            } else {
+                request.setAttribute("errorMessage", "Invalid username or password");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
             }
         } else {
-            // Invalid credentials
+
             request.setAttribute("errorMessage", "Invalid username or password");
             request.getRequestDispatcher("index.jsp").forward(request, response);
         }

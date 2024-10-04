@@ -23,7 +23,7 @@ public interface UserDAO {
 
     Optional<User> findByName(String name);
 
-    Optional<User> findByUsernameAndPassword(String username, String password);
+    Optional<User> findByUsernameAndPassword(String username);
 
     List<User> findByRole(Role role);
 
