@@ -1,18 +1,16 @@
 package org.youcode.DevSync.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-
 @Data
-@Table(name="tags")
+@Table(name = "tags")
 public class Tag {
 
     @Id
@@ -23,8 +21,10 @@ public class Tag {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @ManyToMany(mappedBy = "tags")
+    private List<Task> tasks = new ArrayList<>();
+
     public Tag() {
         this.id = UUID.randomUUID();
     }
-
 }
