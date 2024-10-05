@@ -1,5 +1,6 @@
 <%@ page import="org.youcode.DevSync.domain.entities.Tag" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="org.youcode.DevSync.domain.entities.User" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
   Date: 03/10/2024
@@ -184,13 +185,17 @@
                     </span>
             </div>
 
+            <%
+                User loggedInUser = (User) session.getAttribute("user");
+            %>
+
             <div class="profile">
                 <div class="info">
-                    <p>Hey, <b>Reza</b></p>
-                    <small class="text-muted">Admin</small>
+                    <p>Hey, <b><%= (loggedInUser != null) ? loggedInUser.getUsername() : "Guest" %></b></p>
+                    <small class="text-muted"><%= (loggedInUser != null) ? loggedInUser.getRole().toString() : "Guest" %></small>
                 </div>
                 <div class="profile-photo">
-                    <img src="img/profile.png">
+                    <img src="img/profile.png" alt="Profile Photo">
                 </div>
             </div>
 
