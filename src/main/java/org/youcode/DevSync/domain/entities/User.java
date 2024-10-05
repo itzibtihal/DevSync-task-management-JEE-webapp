@@ -44,8 +44,8 @@ public class User {
     @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
-    private int availableTokens;
-    private int deleteTokens;
+    private Integer availableTokens;
+    private Integer deleteTokens;
 
     public User() {
         this.id = UUID.randomUUID();

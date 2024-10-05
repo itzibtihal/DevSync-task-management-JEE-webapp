@@ -67,13 +67,13 @@ public class Task {
         this.deletedAt = null;
     }
 
-    public Task(String title, String description, LocalDateTime dueDate, User createdBy) {
+    public Task(String title, String description, LocalDateTime dueDate, User createdBy,User assignedUser) {
         this();
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.createdBy = createdBy;
-        this.assignedUser = createdBy;
+        this.assignedUser = assignedUser;
     }
 
     public void assignNewUser(User currentUser, User newUser) throws TokenLimitExceededException, PermissionDeniedException {
