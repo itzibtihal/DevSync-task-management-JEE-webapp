@@ -59,6 +59,18 @@
         <url-pattern>/manager</url-pattern>
     </servlet-mapping>
 
+    <!-- Servlet Declaration for LogoutServlet -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.LogoutServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mapping for LogoutServlet -->
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>org.youcode.DevSync.servlets.users.UserServlet</servlet-class>

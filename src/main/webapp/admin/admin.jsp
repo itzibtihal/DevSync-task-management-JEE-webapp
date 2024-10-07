@@ -86,7 +86,7 @@
                     </span>
                 <h3>Settings</h3>
             </a>
-            <a href="#">
+            <a href="/DevSync/logout    ">
                     <span class="material-icons-sharp">
                         logout
                     </span>
