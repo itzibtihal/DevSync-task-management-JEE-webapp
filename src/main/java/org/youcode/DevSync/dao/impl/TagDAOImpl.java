@@ -119,5 +119,16 @@ public class TagDAOImpl implements TagDAO {
         }
     }
 
+    public List<Tag> findTagsByTaskId(UUID taskId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            TypedQuery<Tag> query = entityManager.createQuery(
+                    "SELECT t FROM Tag t JOIN t.tasks task WHERE task.id = :taskId", Tag.class);
+            query.setParameter("taskId", taskId);
+            return query.getResultList();
+        } finally {
+            entityManager.close();
+        }
+    }
 
 }

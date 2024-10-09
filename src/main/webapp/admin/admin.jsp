@@ -54,9 +54,10 @@
                     </span>
                 <h3>Tags</h3>
             </a>
-            <a href="Requests.html">
+
+            <a href="/DevSync/crudtask?action=listAll">
                     <span class="material-icons-sharp">
-                        receipt_long
+                         receipt_long
                     </span>
                 <h3>Tasks</h3>
             </a>

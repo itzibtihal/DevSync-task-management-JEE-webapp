@@ -6,7 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page import="org.youcode.DevSync.domain.entities.User" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="org.youcode.DevSync.domain.entities.Task" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
   Date: 01/10/2024
@@ -49,7 +50,7 @@
                     </span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="user-crud?action=list" class="active">
+            <a href="user-crud?action=list" >
                     <span class="material-icons-sharp">
                         person_outline
                     </span>
@@ -61,7 +62,7 @@
                     </span>
                 <h3>Tags</h3>
             </a>
-            <a href="Requests.html">
+            <a href="/DevSync/crudtask?action=listAll" class="active">
                     <span class="material-icons-sharp">
                         receipt_long
                     </span>
@@ -106,77 +107,41 @@
     <!-- Main Content -->
 
     <main>
-        <h1>Users</h1>
-        <!-- last 4 Users Section -->
-        <div class="new-users">
-            <h2>Recent Managers</h2>
-            <div class="user-list">
-                <%
-                    List<User> managers = (List<User>) request.getAttribute("managers");
-                    if (managers == null || managers.isEmpty()) {
-                %>
-                <p>No managers found</p>
-                <%
-                } else {
-                    for (User manager : managers) {
-                %>
-                <div class="user">
-                    <img src="img/profile.png"> <!-- Add actual image path -->
-                    <h2><%= manager.getFirstName() %> <%= manager.getLastName() %></h2>
-                    <p><%= manager.getEmail() %></p>
-
-                </div>
-                <%
-                        }
-                    }
-                %>
-            </div>
-        </div>
-
-
-        <!-- End of 4 Users Section -->
-
+        <h1>Tasks</h1>
         <div class="recent-orders">
-            <h2>All Users</h2>
-            <a href="cruduser?action=add">Add new User</a>
+            <h2>All Tasks</h2>
+            <a href="crudtask?action=add">Add new Task</a>
             <table>
                 <thead>
                 <tr>
-                    <th>Profile</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th></th>
-                    <th></th>
-
+                    <th>Title</th>
+                    <th>Due date</th>
+                    <th>Assigned User</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
                 <%
-                    List<User> users = (List<User>) request.getAttribute("users");
-                    if (users != null && !users.isEmpty()) {
-                        for (User user : users) {
+                    List<Task> tasks = (List<Task>) request.getAttribute("tasks");
+                    if (tasks != null && !tasks.isEmpty()) {
+                        for (Task task : tasks) {
                 %>
                 <tr>
-                    <td><img src="img/profile.png" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%"></td> <!-- Add actual image path -->
-                    <td><%= user.getFirstName() %> <%= user.getLastName() %></td>
-                    <td><%= user.getEmail() %></td>
-                    <td><%= user.getRole() %></td>
-                    <td>
-                        <a href="cruduser?action=edit&id=<%= user.getId() %>"
-                           onclick="return confirm('Are you sure you want to edit this user?');">Edit</a>
-                    </td>
-                    <td>
-                        <a href="cruduser?action=delete&id=<%= user.getId() %>"
-                           onclick="return confirm('Are you sure you want to delete this user?');" style="color: red">Delete</a>
-                    </td>
+                    <td><%= task.getTitle() %></td>
+                    <td><%= task.getDueDate() %></td>
+                    <td><%= task.getAssignedUser() != null ? task.getAssignedUser().getUsername() : "Unassigned" %></td>
+                    <td><%= task.getStatus() %></td>
+                    <td><a href="/DevSync/crudtask?action=get&id=<%= task.getId() %>">Details</a></td>
+                    <td><a href="/DevSync/crudtask?action=delete&id=<%= task.getId() %>" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a></td>
                 </tr>
                 <%
                     }
                 } else {
                 %>
                 <tr>
-                    <td colspan="5">No users found</td>
+                    <td colspan="7">No tasks found</td>
                 </tr>
                 <%
                     }

@@ -49,6 +49,18 @@
         <url-pattern>/TagCrud</url-pattern>
     </servlet-mapping>
 
+    <!-- Servlet Declaration for TaskCrudServlet -->
+    <servlet>
+        <servlet-name>TaskCrudServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crud.TaskCrudServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mapping for TaskCrudServlet -->
+    <servlet-mapping>
+        <servlet-name>TaskCrudServlet</servlet-name>
+        <url-pattern>/crudtask</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>ManagerServlet</servlet-name>
         <servlet-class>org.youcode.DevSync.servlets.users.ManagerServlet</servlet-class>

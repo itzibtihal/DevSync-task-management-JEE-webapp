@@ -28,7 +28,7 @@ public class Main {
         Tag tag = tagDAO.findById(tagId).orElseThrow(() -> new RuntimeException("Tag not found"));
 
         // Create a new task
-        Task task = new Task("Finish DevSync implementation", "Work on the task DAO implementation and test the save method.", LocalDateTime.now().plusDays(5), user,user2);
+        Task task = new Task("Finish DevSync implementation", "Work on the task DAO implementation and test the save method.",LocalDateTime.now().plusDays(5), LocalDateTime.now().plusDays(5),user,user2);
 
         // Assign the tag to the task
         task.getTags().add(tag);

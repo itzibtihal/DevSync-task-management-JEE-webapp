@@ -36,6 +36,9 @@ public class Task {
     @Column(nullable = false)
     private LocalDateTime dueDate;
 
+    @Column(nullable = false)
+    private  LocalDateTime startDate;
+
     private LocalDateTime deletedAt;
 
     @Enumerated(EnumType.STRING)
@@ -67,11 +70,12 @@ public class Task {
         this.deletedAt = null;
     }
 
-    public Task(String title, String description, LocalDateTime dueDate, User createdBy,User assignedUser) {
+    public Task(String title, String description, LocalDateTime dueDate, LocalDateTime startDate,User createdBy,User assignedUser) {
         this();
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.startDate = startDate;
         this.createdBy = createdBy;
         this.assignedUser = assignedUser;
     }
