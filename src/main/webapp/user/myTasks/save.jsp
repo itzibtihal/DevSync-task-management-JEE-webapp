@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Youcode
+  Date: 11/10/2024
+  Time: 00:49
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page import="org.youcode.DevSync.domain.entities.User" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.youcode.DevSync.domain.entities.Tag" %>
@@ -9,6 +16,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevSync</title>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -74,7 +82,7 @@
     <div class="row d-flex justify-content-center">
         <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
             <div class="card">
-                <form id="taskForm" action="crudtask" method="post" class="form-card">
+                <form id="taskForm" action="MyTask" method="post" class="form-card">
                     <h1><em>Save new task</em></h1>
                     <div class="row justify-content-between text-left">
                         <div class="form-group col-12 flex-column d-flex">
@@ -89,8 +97,8 @@
                         </div>
                     </div>
                     <div class="row justify-content-between text-left">
-                        <div class="form-group col-sm-6 flex-column d-flex">
-                            <label class="form-control-label px-3">Tags</label>
+                        <div class="form-group col-12 flex-column d-flex">
+                            <label class="form-control-label px-6">Tags</label>
                             <select class="filter-multi-select" multiple id="tags" name="tags" required>
                                 <%
                                     List<Tag> tags = (List<Tag>) request.getAttribute("tags");
@@ -108,27 +116,20 @@
                                 %>
                             </select>
                         </div>
-                        <div class="form-group col-sm-6 flex-column d-flex">
-                            <label class="form-control-label px-3">Assigned To</label>
-                            <select name="assignedUser" class="form-control" required>
-                                <option value="">Select an option</option>
-                                <%
-                                    List<User> users = (List<User>) request.getAttribute("users");
-                                    if (users != null) {
-                                        for (User user : users) {
-                                %>
-                                <option value="<%= user.getId() %>"><%= user.getUsername() %></option>
-                                <%
-                                    }
-                                } else {
-                                %>
-                                <option disabled>No users available</option>
-                                <%
-                                    }
-                                %>
+                    </div>
+
+                    <div class="row justify-content-between text-left">
+                        <div class="form-group col-12 flex-column d-flex">
+                            <label class="form-control-label px-6">Status</label>
+                            <select class="filter-multi-select" name="status" required>
+                                <option value="NOT_STARTED">Not Started</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="COMPLETED">Completed</option>
+                                <option value="OVERDUE">Overdue</option>
                             </select>
                         </div>
                     </div>
+
                     <div class="row justify-content-between text-left">
                         <div class="form-group col-sm-6 flex-column d-flex">
                             <label class="form-control-label px-3">Starting date</label>
@@ -139,10 +140,13 @@
                             <input type="datetime-local" name="dueDate" id="ending_date" required>
                         </div>
                     </div>
+
                     <%
                         User loggedInUser = (User) session.getAttribute("user");
                     %>
                     <input type="hidden" name="createdBy" value="<%= (loggedInUser != null) ? loggedInUser.getId() : "" %>">
+                    <input type="hidden" name="assignedUser" value="<%= (loggedInUser != null) ? loggedInUser.getId() : "" %>">
+
                     <div class="row justify-content-center">
                         <div class="form-group col-sm-6">
                             <button type="submit" class="btn-block" style="background-color: #38d39f;">Save</button>
@@ -175,23 +179,25 @@
     const today = new Date();
     today.setDate(today.getDate() + 3);
     const minDate = today.toISOString().slice(0, 16);
+
     document.getElementById('starting_date').min = minDate;
     document.getElementById('ending_date').min = minDate;
 
+    // Validate form on submit
     document.getElementById('taskForm').addEventListener('submit', function(event) {
         const tags = document.getElementById('tags').selectedOptions;
         if (tags.length < 1) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent form submission
             alert("Please select at least one tag.");
         }
 
-
+        // Check for past dates
         const startDate = new Date(document.getElementById('starting_date').value);
         const endDate = new Date(document.getElementById('ending_date').value);
         const now = new Date();
 
         if (startDate < now || endDate < now) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent form submission
             alert("Start and end dates must be in the future.");
         }
     });

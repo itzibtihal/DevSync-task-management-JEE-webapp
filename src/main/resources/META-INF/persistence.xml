@@ -7,6 +7,9 @@
         <class>org.youcode.DevSync.domain.entities.User</class>
         <class>org.youcode.DevSync.domain.enums.Role</class>
         <class>org.youcode.DevSync.domain.entities.Tag</class>
+        <class>org.youcode.DevSync.domain.entities.Task</class>
+        <class>org.youcode.DevSync.domain.entities.TokenManager</class>
+        <class>org.youcode.DevSync.domain.entities.Request</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
