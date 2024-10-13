@@ -44,6 +44,7 @@ public class User {
     @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
+
     private Integer availableTokens;
     private Integer deleteTokens;
 

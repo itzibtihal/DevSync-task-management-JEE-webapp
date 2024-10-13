@@ -1,4 +1,4 @@
-package org.youcode.DevSync.servlets.crud;
+package org.youcode.DevSync.servlets.crudAdmin;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -81,7 +81,7 @@ public class UserCrudServlet extends HttpServlet {
         if (method != null && method.equalsIgnoreCase("put")) {
             doPut(request, response);
         } else {
-            // Handle the creation of a new user
+
             String username = request.getParameter("username");
             String password = request.getParameter("password");
             String firstName = request.getParameter("firstName");
@@ -119,7 +119,6 @@ public class UserCrudServlet extends HttpServlet {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            // Check if the new username already exists
             Optional<User> userWithSameUsername = userDAO.findByName(username);
             if (userWithSameUsername.isPresent() && !userWithSameUsername.get().getId().equals(userId)) {
                 response.sendError(HttpServletResponse.SC_CONFLICT, "Username already exists");
