@@ -143,4 +143,32 @@ public class TaskDAOImpl implements TaskDAO {
             em.close();
         }
     }
+
+    public long countTasksByStatusForUser(UUID userId, StatusTask status) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId AND t.status = :status", Long.class);
+            query.setParameter("userId", userId);
+            query.setParameter("status", status);
+            return query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+
+    public List<Task> findTasksAssignedToUserNotCreatedBy(UUID assignedUserId, UUID creatorId) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        try {
+            TypedQuery<Task> query = em.createQuery(
+                    "SELECT t FROM Task t WHERE t.assignedUser.id = :assignedUserId AND t.createdBy.id != :creatorId", Task.class);
+            query.setParameter("assignedUserId", assignedUserId);
+            query.setParameter("creatorId", creatorId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }
