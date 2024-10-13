@@ -1,4 +1,4 @@
-package org.youcode.DevSync.modals;
+package org.youcode.DevSync.domain.enums;
 
 public enum Role {
     ADMIN,

@@ -1,35 +1,34 @@
 package org.youcode.DevSync.dao.impl;
 
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
-import org.youcode.DevSync.dao.interfaces.UserDAO;
-import org.youcode.DevSync.domain.enums.Role;
-import org.youcode.DevSync.domain.entities.User;
+import org.hibernate.Session;
+import org.youcode.DevSync.dao.interfaces.TagDAO;
+import org.youcode.DevSync.domain.entities.Tag;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserDAOImpl implements UserDAO {
+public class TagDAOImpl implements TagDAO {
 
-    private final EntityManagerFactory entityManagerFactory;
+    private  final EntityManagerFactory entityManagerFactory;
 
-    public UserDAOImpl() {
-        this.entityManagerFactory = Persistence.createEntityManagerFactory("default");
+    public TagDAOImpl() {
+       this.entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 
     @Override
-    public User save(User user) {
+    public Tag save(Tag tag) {
         EntityManager em = entityManagerFactory.createEntityManager();
         try {
             em.getTransaction().begin();
-            if (user.getId() != null) {
-                user = em.merge(user);
+            if (tag.getId() != null) {
+                tag = em.merge(tag);
             } else {
-                em.persist(user);
+                em.persist(tag);
             }
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -40,26 +39,25 @@ public class UserDAOImpl implements UserDAO {
         } finally {
             em.close();
         }
-        return user;
+        return tag;
     }
 
-
     @Override
-    public Optional<User> findById(UUID id) {
+    public Optional<Tag> findById(UUID id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            User user = entityManager.find(User.class, id);
-            return Optional.ofNullable(user);
+            Tag tag = entityManager.find(Tag.class, id);
+            return Optional.ofNullable(tag);
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public List<User> findAll() {
+    public List<Tag> findAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u", User.class);
+            TypedQuery<Tag> query = entityManager.createQuery("SELECT u FROM Tag u", Tag.class);
             return query.getResultList();
         } finally {
             entityManager.close();
@@ -67,11 +65,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean update(User user) {
+    public boolean update(Tag tag) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(user);
+            entityManager.merge(tag);
             entityManager.getTransaction().commit();
             return true;
         } catch (Exception e) {
@@ -90,9 +88,9 @@ public class UserDAOImpl implements UserDAO {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            User user = entityManager.find(User.class, id);
-            if (user != null) {
-                entityManager.remove(user);
+            Tag tag = entityManager.find(Tag.class,id);
+            if (tag != null) {
+                entityManager.remove(tag);
                 entityManager.getTransaction().commit();
                 return true;
             } else {
@@ -103,67 +101,34 @@ public class UserDAOImpl implements UserDAO {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            e.printStackTrace(); // Log the exception
+            e.printStackTrace();
             return false;
         } finally {
             entityManager.close();
         }
     }
 
-    @Override
-    public Optional<User> findByName(String username) {
+    public List<Tag> findByName(String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
-            query.setParameter("username", username);
-            return query.getResultStream().findFirst();
-        } finally {
-            entityManager.close();
-        }
-    }
-
-
-    @Override
-    public Optional<User> findByUsernameAndPassword(String username) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        try {
-            String jpql = "SELECT u FROM User u WHERE u.username = :username";
-            return em.createQuery(jpql, User.class)
-                    .setParameter("username", username)
-                    .getResultList()
-                    .stream()
-                    .findFirst();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public List<User> findByRole(Role role) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            TypedQuery<User> query = entityManager.createQuery(
-                    "SELECT u FROM User u WHERE u.role = :role ORDER BY u.created_at DESC", User.class);
-            query.setParameter("role", role);
-            query.setMaxResults(4);
+            TypedQuery<Tag> query = entityManager.createQuery("FROM Tag WHERE name = :name", Tag.class);
+            query.setParameter("name", name);
             return query.getResultList();
         } finally {
             entityManager.close();
         }
     }
 
-    @Override
-    public List<User> findRecentUsers(int limit) {
+    public List<Tag> findTagsByTaskId(UUID taskId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            TypedQuery<User> query = entityManager.createQuery(
-                    "SELECT u FROM User u ORDER BY u.created_at DESC", User.class);
-            query.setMaxResults(limit);
+            TypedQuery<Tag> query = entityManager.createQuery(
+                    "SELECT t FROM Tag t JOIN t.tasks task WHERE task.id = :taskId", Tag.class);
+            query.setParameter("taskId", taskId);
             return query.getResultList();
         } finally {
             entityManager.close();
         }
     }
-
 
 }

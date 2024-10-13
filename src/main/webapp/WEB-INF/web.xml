@@ -7,7 +7,7 @@
     <!-- Servlet Declaration for UserServlet -->
     <servlet>
         <servlet-name>UserCrudServlet</servlet-name>
-        <servlet-class>org.youcode.DevSync.servlets.crud.UserCrudServlet</servlet-class>
+        <servlet-class>org.youcode.DevSync.servlets.crudAdmin.UserCrudServlet</servlet-class>
     </servlet>
 
     <!-- Servlet Mapping for UserServlet -->
@@ -38,6 +38,29 @@
         <url-pattern>/admin</url-pattern>
     </servlet-mapping>
 
+
+    <servlet>
+        <servlet-name>TagCrudServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudAdmin.TagCrudServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>TagCrudServlet</servlet-name>
+        <url-pattern>/TagCrud</url-pattern>
+    </servlet-mapping>
+
+    <!-- Servlet Declaration for TaskCrudServlet -->
+    <servlet>
+        <servlet-name>TaskCrudServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudAdmin.TaskCrudServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mapping for TaskCrudServlet -->
+    <servlet-mapping>
+        <servlet-name>TaskCrudServlet</servlet-name>
+        <url-pattern>/crudtask</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>ManagerServlet</servlet-name>
         <servlet-class>org.youcode.DevSync.servlets.users.ManagerServlet</servlet-class>
@@ -46,6 +69,18 @@
     <servlet-mapping>
         <servlet-name>ManagerServlet</servlet-name>
         <url-pattern>/manager</url-pattern>
+    </servlet-mapping>
+
+    <!-- Servlet Declaration for LogoutServlet -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.LogoutServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mapping for LogoutServlet -->
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -58,6 +93,48 @@
         <url-pattern>/user</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>TaskServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudUser.TaskServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>TaskServlet</servlet-name>
+        <url-pattern>/UserTasks</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UseTokenServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudUser.UseTokenServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UseTokenServlet</servlet-name>
+        <url-pattern>/UseTokenServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>RequestServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudUser.RequestServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RequestServlet</servlet-name>
+        <url-pattern>/requests</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>UserTaskCrudServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudUser.UserTaskCrudServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UserTaskCrudServlet</servlet-name>
+        <url-pattern>/MyTask</url-pattern>
+    </servlet-mapping>
+
     <!-- JSP Mapping Example (optional) -->
     <jsp-config>
         <taglib>
@@ -66,7 +143,7 @@
         </taglib>
     </jsp-config>
 
-    <!-- Welcome Page (optional) -->
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

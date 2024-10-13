@@ -1,4 +1,4 @@
-package org.youcode.DevSync.servlets.crud;
+package org.youcode.DevSync.servlets.crudAdmin;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.youcode.DevSync.dao.impl.UserDAOImpl;
-import org.youcode.DevSync.modals.Role;
-import org.youcode.DevSync.modals.User;
+import org.youcode.DevSync.domain.enums.Role;
+import org.youcode.DevSync.domain.entities.User;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +36,7 @@ public class UserCrudServlet extends HttpServlet {
             System.out.println("Number of users retrieved: " + users.size());
             request.setAttribute("users", users);
 
-            request.getRequestDispatcher("userCrud.jsp").forward(request, response);
+            request.getRequestDispatcher("admin/users/userCrud.jsp").forward(request, response);
 
         } else if ("get".equals(action)) {
             String userIdString = request.getParameter("id");
@@ -64,12 +64,12 @@ public class UserCrudServlet extends HttpServlet {
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 request.setAttribute("user", user);
-                request.getRequestDispatcher("editUser.jsp").forward(request, response);
+                request.getRequestDispatcher("admin/users/editUser.jsp").forward(request, response);
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
             }
         } else if ("add".equals(action)) {
-            request.getRequestDispatcher("save-user.jsp").forward(request, response);
+            request.getRequestDispatcher("admin/users/save-user.jsp").forward(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
         }
@@ -81,7 +81,7 @@ public class UserCrudServlet extends HttpServlet {
         if (method != null && method.equalsIgnoreCase("put")) {
             doPut(request, response);
         } else {
-            // Handle the creation of a new user
+
             String username = request.getParameter("username");
             String password = request.getParameter("password");
             String firstName = request.getParameter("firstName");
@@ -119,7 +119,6 @@ public class UserCrudServlet extends HttpServlet {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            // Check if the new username already exists
             Optional<User> userWithSameUsername = userDAO.findByName(username);
             if (userWithSameUsername.isPresent() && !userWithSameUsername.get().getId().equals(userId)) {
                 response.sendError(HttpServletResponse.SC_CONFLICT, "Username already exists");

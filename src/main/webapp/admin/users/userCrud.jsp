@@ -1,12 +1,9 @@
-<%@ page import="org.youcode.DevSync.modals.User" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.time.LocalDateTime" %>
-<%@ page import="java.time.Duration" %>
-<%@ page import="java.time.format.DateTimeFormatter" %><%--
+<%@ page import="org.youcode.DevSync.domain.entities.User" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
   Date: 01/10/2024
-  Time: 12:22
+  Time: 23:12
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -39,29 +36,29 @@
         </div>
 
         <div class="sidebar">
-            <a href="#" class="active">
+            <a href="/DevSync/admin" >
                     <span class="material-icons-sharp">
                         dashboard
                     </span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="cruduser?action=listAll">
+            <a href="user-crud?action=list" class="active">
                     <span class="material-icons-sharp">
                         person_outline
                     </span>
                 <h3>Users</h3>
             </a>
-            <a href="partners.html" >
+            <a href="/DevSync/TagCrud" >
                     <span class="material-icons-sharp">
                         business
                     </span>
-                <h3>Tasks</h3>
+                <h3>Tags</h3>
             </a>
             <a href="Requests.html">
                     <span class="material-icons-sharp">
                         receipt_long
                     </span>
-                <h3>Requests</h3>
+                <h3>Tasks</h3>
             </a>
 
             <a href="#">
@@ -89,7 +86,7 @@
                     </span>
                 <h3>Settings</h3>
             </a>
-            <a href="#">
+            <a href="/DevSync/logout">
                     <span class="material-icons-sharp">
                         logout
                     </span>
@@ -102,111 +99,84 @@
     <!-- Main Content -->
 
     <main>
-        <h1>Dashboard</h1>
-        <!-- Analyses -->
-        <div class="analyse">
-            <div class="sales">
-                <div class="status">
-                    <div class="info">
-                        <h3>Active Users</h3>
-                        <h1>$65,024</h1>
-                    </div>
-                    <div class="progresss">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="percentage">
-                            <p>+81%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="visits">
-                <div class="status">
-                    <div class="info">
-                        <h3>Total Tasks</h3>
-                        <h1>24,981</h1>
-                    </div>
-                    <div class="progresss">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="percentage">
-                            <p>-48%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="searches">
-                <div class="status">
-                    <div class="info">
-                        <h3>Token Usage</h3>
-                        <h1>14,147</h1>
-                    </div>
-                    <div class="progresss">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="percentage">
-                            <p>+21%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End of Analyses -->
-
-        <!-- New Users Section -->
+        <h1>Users</h1>
+        <!-- last 4 Users Section -->
         <div class="new-users">
             <h2>Recent Managers</h2>
             <div class="user-list">
                 <%
-                    List<User> recentUsers = (List<User>) request.getAttribute("recentUsers");
-                    if (recentUsers == null || recentUsers.isEmpty()) {
+                    List<User> managers = (List<User>) request.getAttribute("managers");
+                    if (managers == null || managers.isEmpty()) {
                 %>
-                <p>No user found</p>
+                <p>No managers found</p>
                 <%
                 } else {
-                    for (User recentUser : recentUsers) {
+                    for (User manager : managers) {
                 %>
                 <div class="user">
                     <img src="img/profile.png"> <!-- Add actual image path -->
-                    <h2><%= recentUser.getFirstName() %> <%= recentUser.getLastName() %></h2>
-                    <p><%= recentUser.getEmail() %></p>
+                    <h2><%= manager.getFirstName() %> <%= manager.getLastName() %></h2>
+                    <p><%= manager.getEmail() %></p>
+
                 </div>
                 <%
                         }
                     }
                 %>
-                <div class="user">
-                    <img src="img/plus.png">
-                    <h2>More</h2>
-                    <a href="cruduser?action=add">New Artists</a>
-                </div>
             </div>
         </div>
 
 
-        <!-- End of New Users Section -->
+        <!-- End of 4 Users Section -->
 
-        <!-- Recent Orders Table -->
         <div class="recent-orders">
-            <h2>Recent Tasks</h2>
+            <h2>All Users</h2>
+            <a href="cruduser?action=add">Add new User</a>
             <table>
                 <thead>
                 <tr>
-                    <th>Task Name</th>
-                    <th>User Name</th>
-                    <th>Deadline</th>
-                    <th>Status</th>
+                    <th>Profile</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
                     <th></th>
+                    <th></th>
+
                 </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                <%
+                    List<User> users = (List<User>) request.getAttribute("users");
+                    if (users != null && !users.isEmpty()) {
+                        for (User user : users) {
+                %>
+                <tr>
+                    <td><img src="img/profile.png" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%"></td> <!-- Add actual image path -->
+                    <td><%= user.getFirstName() %> <%= user.getLastName() %></td>
+                    <td><%= user.getEmail() %></td>
+                    <td><%= user.getRole() %></td>
+                    <td>
+                        <a href="cruduser?action=edit&id=<%= user.getId() %>"
+                           onclick="return confirm('Are you sure you want to edit this user?');">Edit</a>
+                    </td>
+                    <td>
+                        <a href="cruduser?action=delete&id=<%= user.getId() %>"
+                           onclick="return confirm('Are you sure you want to delete this user?');" style="color: red">Delete</a>
+                    </td>
+                </tr>
+                <%
+                    }
+                } else {
+                %>
+                <tr>
+                    <td colspan="5">No users found</td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
             </table>
-            <a href="#">Show All</a>
         </div>
-        <!-- End of Recent Orders -->
 
     </main>
 
@@ -229,13 +199,17 @@
                     </span>
             </div>
 
+            <%
+                User loggedInUser = (User) session.getAttribute("user");
+            %>
+
             <div class="profile">
                 <div class="info">
-                    <p>Hey, <b>Reza</b></p>
-                    <small class="text-muted">Admin</small>
+                    <p>Hey, <b><%= (loggedInUser != null) ? loggedInUser.getUsername() : "Guest" %></b></p>
+                    <small class="text-muted"><%= (loggedInUser != null) ? loggedInUser.getRole().toString() : "Guest" %></small>
                 </div>
                 <div class="profile-photo">
-                    <img src="img/profile.png">
+                    <img src="img/profile.png" alt="Profile Photo">
                 </div>
             </div>
 
@@ -317,3 +291,4 @@
 </body>
 
 </html>
+

@@ -1,7 +1,7 @@
-package org.youcode.DevSync.dao;
+package org.youcode.DevSync.dao.interfaces;
 
-import org.youcode.DevSync.modals.Role;
-import org.youcode.DevSync.modals.User;
+import org.youcode.DevSync.domain.enums.Role;
+import org.youcode.DevSync.domain.entities.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ public interface UserDAO {
 
     Optional<User> findByName(String name);
 
-    Optional<User> findByUsernameAndPassword(String username, String password);
+    Optional<User> findByUsernameAndPassword(String username);
 
     List<User> findByRole(Role role);
 
