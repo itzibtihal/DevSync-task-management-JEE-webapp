@@ -1,7 +1,6 @@
-package org.youcode.DevSync.servlets.crud;
+package org.youcode.DevSync.servlets.crudAdmin;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -106,8 +105,8 @@ public class TaskCrudServlet extends HttpServlet {
     }
 
     private void handleAddTask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> users = userDAO.findAll(); // Fetch all users
-        List<Tag> tags = tagDAO.findAll(); // Fetch all tags
+        List<User> users = userDAO.findAll();
+        List<Tag> tags = tagDAO.findAll();
         request.setAttribute("users", users);
         request.setAttribute("tags", tags);
         request.getRequestDispatcher("admin/task/save.jsp").forward(request, response);
@@ -115,7 +114,7 @@ public class TaskCrudServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Log all request parameters for debugging
+
         request.getParameterMap().forEach((key, value) -> System.out.println(key + ": " + Arrays.toString(value)));
 
         String title = request.getParameter("title");
@@ -126,7 +125,7 @@ public class TaskCrudServlet extends HttpServlet {
         String endingDateStr = request.getParameter("dueDate");
         String createdBy = request.getParameter("createdBy");
 
-        // Check for null or empty parameters
+
         if (title == null || title.isEmpty() ||
                 description == null || description.isEmpty() ||
                 startingDateStr == null || startingDateStr.isEmpty() ||
@@ -148,7 +147,6 @@ public class TaskCrudServlet extends HttpServlet {
             return;
         }
 
-        // Fetch the User object based on the createdBy string (user ID)
         User user = userDAO.findById(UUID.fromString(createdBy))
                 .orElseThrow(() -> new ServletException("User not found"));
 
@@ -165,7 +163,6 @@ public class TaskCrudServlet extends HttpServlet {
             task.setAssignedUser(assignedUser);
         }
 
-        // Handle tags if any
         if (tags != null) {
             for (String tagId : tags) {
                 Tag tag = tagDAO.findById(UUID.fromString(tagId)).orElse(null);
