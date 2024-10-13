@@ -100,4 +100,13 @@ public class Task {
     public void markAsDeleted() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void deleteTask(TokenManager tokenManager) throws TokenLimitExceededException {
+        if (tokenManager.getMonthlyDeleteToken() <= 0) {
+            throw new TokenLimitExceededException("You've already used your monthly delete token.");
+        }
+        this.tokenUsed = true;
+        this.deletedAt = LocalDateTime.now();
+        tokenManager.useDeleteToken();
+    }
 }
