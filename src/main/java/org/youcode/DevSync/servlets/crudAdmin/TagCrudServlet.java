@@ -1,4 +1,4 @@
-package org.youcode.DevSync.servlets.crud;
+package org.youcode.DevSync.servlets.crudAdmin;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -53,7 +53,6 @@ public class TagCrudServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         if (name != null && !name.isEmpty()) {
-            // Check if a tag with the same name already exists
             List<Tag> existingTags = tagDAO.findByName(name);
             if (existingTags.isEmpty()) {
                 Tag tag = new Tag();
@@ -61,13 +60,12 @@ public class TagCrudServlet extends HttpServlet {
                 tagDAO.save(tag);
                 response.setStatus(HttpServletResponse.SC_CREATED);
             } else {
-                response.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflict
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
                 response.getWriter().write("Tag with the same name already exists.");
             }
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        // Redirect back to the same page
         response.sendRedirect(request.getContextPath() + "/TagCrud");
     }
 
