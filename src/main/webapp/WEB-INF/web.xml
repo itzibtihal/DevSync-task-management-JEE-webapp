@@ -24,6 +24,31 @@
 
     <!-- Servlet Mapping for LoginServlet -->
     <servlet-mapping>
+        <servlet-name>UsersRequestServlet</servlet-name>
+        <url-pattern>/UsersRequest</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UsersRequestServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudAdmin.UsersRequestServlet</servlet-class>
+    </servlet>
+
+
+
+    <servlet-mapping>
+        <servlet-name>UserAchievementServlet</servlet-name>
+        <url-pattern>/usersAchievements</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserAchievementServlet</servlet-name>
+        <servlet-class>org.youcode.DevSync.servlets.crudAdmin.UserAchievementServlet</servlet-class>
+    </servlet>
+
+
+
+    <!-- Servlet Mapping for LoginServlet -->
+    <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
