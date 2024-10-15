@@ -35,6 +35,13 @@ public class Request {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
+    @Column(nullable = false)
+    private LocalDateTime responseDeadline;
+
+    @Column(nullable = false)
+    private boolean tokensGranted = false;
+
+
     public Request() {
     }
 
@@ -42,8 +49,9 @@ public class Request {
     public Request(User user, Task task, TokenType tokenType) {
         this.user = user;
         this.task = task;
-        this.tokenType = tokenType; // Store as TokenType
+        this.tokenType = tokenType;
         this.timestamp = LocalDateTime.now();
-        this.status = RequestStatus.IN_PROGRESS; // Default status
+        this.responseDeadline = this.timestamp.plusHours(12);
+        this.status = RequestStatus.IN_PROGRESS;
     }
 }

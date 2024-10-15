@@ -1,11 +1,15 @@
 package org.youcode.DevSync.services;
 
 import org.youcode.DevSync.dao.interfaces.RequestDAO;
+import org.youcode.DevSync.dao.interfaces.TokenManagerDAO;
 import org.youcode.DevSync.domain.entities.Request;
 import org.youcode.DevSync.domain.entities.Task;
+import org.youcode.DevSync.domain.entities.TokenManager;
 import org.youcode.DevSync.domain.entities.User;
 import org.youcode.DevSync.domain.enums.RequestStatus;
 import org.youcode.DevSync.domain.enums.TokenType;
+import org.youcode.DevSync.domain.exceptions.TokenHasAlreadyBeenUsedException;
+import org.youcode.DevSync.validators.RequestValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,34 +17,38 @@ import java.util.List;
 import java.util.Optional;
 
 public class RequestService {
-    private final RequestDAO requestDAO;
 
-    public RequestService(RequestDAO requestDAO) {
+    private final RequestDAO requestDAO;
+    private final TokenManagerDAO tokenManagerDAO;
+    private  final RequestValidator validator; // New validator class
+
+    public RequestService(RequestDAO requestDAO, TokenManagerDAO tokenManagerDAO ,RequestValidator validator) {
         this.requestDAO = requestDAO;
+        this.tokenManagerDAO = tokenManagerDAO;
+        this.validator = validator;
     }
 
     public Request createRequest(User user, Task task, TokenType tokenType) {
-        validateUser(user);
-        validateTask(task);
+        validator.validateUser(user);
+        validator.validateTask(task);
 
         if (task.isTokenUsed()) {
-            throw new IllegalStateException("A token has already been used for this task. You do not have permission to use a token on it.");
+            throw new TokenHasAlreadyBeenUsedException("A token has already been used for this task. You do not have permission to use a token on it.");
         }
 
-        validateTokenLimit(user, tokenType);
-
+        validator.validateTokenLimit(user, tokenType, requestDAO);
         Request request = new Request(user, task, tokenType);
         return requestDAO.save(request);
     }
 
     public Optional<Request> findRequestById(Long requestId) {
-        validateRequestId(requestId);
+        validator.validateRequestId(requestId);
         return requestDAO.findById(requestId);
     }
 
     public void updateRequestStatus(Long requestId, RequestStatus status) {
-        validateRequestId(requestId);
-        validateStatus(status);
+        validator.validateRequestId(requestId);
+        validator.validateStatus(status);
         requestDAO.updateStatus(requestId, status);
     }
 
@@ -54,100 +62,58 @@ public class RequestService {
     }
 
     public List<Request> getAllRequestsByUser(User user) {
-        validateUser(user);
-        System.out.println("Fetching all requests for user: " + user.getId());
-        List<Request> requests = requestDAO.findAllRequestsByUserId(user);
-        System.out.println("Requests fetched: " + requests.size());
-        return requests;
+        validator.validateUser(user);
+        return requestDAO.findAllRequestsByUserId(user);
     }
 
     public List<Request> getRequestsByUserAndStatus(User user, RequestStatus status) {
-        validateUser(user);
-        validateStatus(status);
+        validator.validateUser(user);
+        validator.validateStatus(status);
         return requestDAO.findRequestsByUserIdAndStatus(user, status);
     }
 
+    public List<Request> getAllRequestsByStatus(RequestStatus status) {
+        validator.validateStatus(status);
+        return requestDAO.findRequestsByStatus(status);
+    }
 
+    public List<Request> getRequestsExcludingStatus(RequestStatus status) {
+        validator.validateStatus(status);
+        return requestDAO.findRequestsExcludingStatus(status);
+    }
 
+    public void updateRequest(Long requestId, RequestStatus status, Task task) {
+        validator.validateRequestId(requestId);
+        validator.validateStatus(status);
+        validator.validateTask(task);
 
-
-    // Validation Methods
-    private void validateUser(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null.");
+        Optional<Request> requestOpt = requestDAO.findById(requestId);
+        if (requestOpt.isPresent()) {
+            Request request = requestOpt.get();
+            request.setStatus(status);
+            request.setTask(task);
+            requestDAO.update(request);
+        } else {
+            throw new IllegalArgumentException("Request not found with ID: " + requestId);
         }
     }
 
-    private void validateTask(Task task) {
-        if (task == null) {
-            throw new IllegalArgumentException("Task cannot be null.");
-        }
-        LocalDateTime now = LocalDateTime.now();
-        if (task.getStartDate() != null && task.getStartDate().isBefore(now)) {
-            throw new IllegalArgumentException("Cannot create a request for a task that starts in the past.");
-        }
-        if (task.getDueDate() != null && task.getDueDate().isBefore(now)) {
-            throw new IllegalArgumentException("Cannot create a request for a task that is already overdue.");
-        }
-    }
+    public void grantTokensIfEligible(Long requestId) {
+        Request request = requestDAO.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 
-    private void validateRequestId(Long requestId) {
-        if (requestId == null || requestId <= 0) {
-            throw new IllegalArgumentException("Invalid request ID.");
-        }
-    }
+        if (LocalDateTime.now().isAfter(request.getResponseDeadline()) && !request.isTokensGranted()) {
+            Optional<TokenManager> tokenManagerOpt = tokenManagerDAO.findByUserId(request.getUser().getId());
 
-    private void validateStatus(RequestStatus status) {
-        if (status == null) {
-            throw new IllegalArgumentException("Status cannot be null.");
-        }
-    }
-
-    private void validateTokenLimit(User user, TokenType tokenType) {
-        int[] tokenCounts = countUsedTokens(user, tokenType);
-        int tokenCountToday = tokenCounts[0];
-        int tokenCountLastMonth = tokenCounts[1];
-        System.out.println(tokenCountLastMonth);
-
-        if (tokenType == TokenType.DAILY && tokenCountToday >= 2) {
-            throw new IllegalStateException("Daily token limit reached. You can only create 2 requests today.");
-        } else if (tokenType == TokenType.MONTHLY) {
-            if (hasMonthlyRequestInLast30Days(user)) {
-                throw new IllegalStateException("You can only create one monthly request every 30 days.");
+            if (!tokenManagerOpt.isPresent()) {
+                TokenManager newTokenManager = new TokenManager();
+                newTokenManager.setUser(request.getUser());
+                newTokenManager.setDailyTokens(4);
+                tokenManagerDAO.save(newTokenManager);
             }
-//            if (tokenCountLastMonth > 0) {
-//                throw new IllegalStateException("Monthly token limit reached. You cannot create a new monthly request.");
-//            }
-        } else if (tokenType == null) {
-            throw new IllegalArgumentException("Invalid token type: " + tokenType);
+
+            request.setTokensGranted(true);
+            requestDAO.update(request);
         }
     }
-
-
-
-
-    private int[] countUsedTokens(User user, TokenType tokenType) {
-        LocalDate today = LocalDate.now();
-        LocalDate thirtyDaysAgo = today.minusDays(30);
-
-        int tokenCountToday = requestDAO.countRequestsByUserAndDate(user, today, tokenType);
-        int tokenCountLastMonth = requestDAO.countRequestsByUserAndDateRange(user, thirtyDaysAgo, today, tokenType);
-
-        System.out.println("Token Count Today: " + tokenCountToday);
-        System.out.println("Token Count Last Month: " + tokenCountLastMonth);
-
-        return new int[]{tokenCountToday, tokenCountLastMonth};
-    }
-
-
-    private boolean hasMonthlyRequestInLast30Days(User user) {
-        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
-        int count = requestDAO.countRequestsByUserAndDateRange(user, thirtyDaysAgo.toLocalDate(), LocalDate.now(), TokenType.MONTHLY);
-        return count > 0;
-    }
-
-
-
-
-
 }
