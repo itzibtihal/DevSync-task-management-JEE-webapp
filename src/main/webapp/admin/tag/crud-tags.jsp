@@ -67,7 +67,7 @@
                     </span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="user-crud?action=list" >
+            <a href="/DevSync/cruduser?action=listAll" >
                     <span class="material-icons-sharp">
                         person_outline
                     </span>
@@ -79,31 +79,27 @@
                     </span>
                 <h3>Tags</h3>
             </a>
-            <a href="Requests.html">
+
+
+            <a href="/DevSync/crudtask?action=listAll">
                     <span class="material-icons-sharp">
-                        receipt_long
+                         receipt_long
                     </span>
                 <h3>Tasks</h3>
             </a>
 
-            <a href="#">
+            <a href="/DevSync/UsersRequest?action=not-accepted">
                     <span class="material-icons-sharp">
                         mail_outline
                     </span>
-                <h3>Notif</h3>
-                <span class="message-count">27</span>
+                <h3>Requests</h3>
+
             </a>
-            <a href="projects.html">
-                    <span class="material-icons-sharp">
-                        inventory
-                    </span>
-                <h3>Projects</h3>
-            </a>
-            <a href="pendingproject.html">
+            <a href="/DevSync/UsersRequest?action=refused">
                     <span class="material-icons-sharp">
                         report_gmailerrorred
                     </span>
-                <h3>Pending Proj</h3>
+                <h3>Refused Req</h3>
             </a>
             <a href="#">
                     <span class="material-icons-sharp">
