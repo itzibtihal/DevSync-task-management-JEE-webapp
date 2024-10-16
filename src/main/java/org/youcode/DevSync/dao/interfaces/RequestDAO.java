@@ -9,6 +9,7 @@ import org.youcode.DevSync.domain.enums.TokenType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RequestDAO {
 
@@ -29,5 +30,22 @@ public interface RequestDAO {
     List<Request> findRequestsByUserIdAndStatus(User user, RequestStatus status);
 
     void createTokenRequest(User user, Task task, TokenType tokenType);
+
+    List<Request> findRequestsByStatusNot(User user, RequestStatus status);
+
+    List<Request> findRequestsByStatus(RequestStatus status);
+
+    List<Request> findRequestsExcludingStatus(RequestStatus status);
+
+    void update(Request request);
+
+    List<Request> findAllPendingRequests();
+
+    long countRequestsCreatedToday(UUID creatorUserId);
+    long countDailyRequests(UUID creatorUserId);
+    long countMonthlyRequests(UUID creatorUserId);
+    long countTotalTokensUsed(UUID creatorUserId);
+
+
 
 }

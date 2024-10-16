@@ -2,20 +2,20 @@ package org.youcode.DevSync.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Setter;
 import org.youcode.DevSync.domain.exceptions.TokenLimitExceededException;
 
-
-  @Entity
-  @Table(name = "token_manager")
-  @Data
-
-
+@Entity
+@Table(name = "token_manager")
+@Data
 public class TokenManager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Setter
     @Column(nullable = false)
     private int dailyTokens = 2;
 
@@ -31,7 +31,7 @@ public class TokenManager {
     }
 
     public void doubleTokens() {
-        dailyTokens *= 2;
+        dailyTokens *= 2; // Doubles the daily tokens
     }
 
     public void useToken() throws TokenLimitExceededException {

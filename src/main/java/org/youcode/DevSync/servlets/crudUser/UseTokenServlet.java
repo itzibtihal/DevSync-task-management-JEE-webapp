@@ -7,13 +7,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.youcode.DevSync.dao.impl.RequestDAOImpl;
 import org.youcode.DevSync.dao.impl.TaskDAOImpl;
+import org.youcode.DevSync.dao.impl.TokenManagerDAOImpl;
 import org.youcode.DevSync.dao.interfaces.RequestDAO;
 import org.youcode.DevSync.dao.interfaces.TaskDAO;
+import org.youcode.DevSync.dao.interfaces.TokenManagerDAO;
 import org.youcode.DevSync.domain.entities.Request;
 import org.youcode.DevSync.domain.entities.Task;
 import org.youcode.DevSync.domain.entities.User;
 import org.youcode.DevSync.domain.enums.TokenType;
 import org.youcode.DevSync.services.RequestService;
+import org.youcode.DevSync.validators.RequestValidator;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -24,14 +27,19 @@ import java.util.UUID;
 public class UseTokenServlet extends HttpServlet {
     private RequestDAO requestDAO;
     private TaskDAO taskDAO;
+    private TokenManagerDAO tokenManagerDAO;
     private RequestService requestService;
 
+    private RequestValidator validator;
     @Override
     public void init() throws ServletException {
         requestDAO = new RequestDAOImpl();
         taskDAO = new TaskDAOImpl();
-        requestService = new RequestService(requestDAO);
+        tokenManagerDAO = new TokenManagerDAOImpl();
+        validator = new RequestValidator();
+        requestService = new RequestService(requestDAO, tokenManagerDAO, validator);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

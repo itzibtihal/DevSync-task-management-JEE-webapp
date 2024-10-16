@@ -1,9 +1,10 @@
 <%@ page import="org.youcode.DevSync.domain.entities.User" %>
+<%@ page import="org.youcode.DevSync.domain.entities.Request" %>
 <%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
-  Date: 01/10/2024
-  Time: 12:22
+  Date: 13/10/2024
+  Time: 21:42
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -15,6 +16,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
     <link rel="stylesheet" href="css/dash.css">
+    <style>
+
+
+        .tag-input {
+            border: 36px solid #ffffff;
+            padding: 10px;
+            width: calc(100% - 92px);
+            box-sizing: border-box;
+            border-radius: 38px;
+        }
+
+        .add-tag button {
+            padding: 10px 20px;
+            background-color: #38d39f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 38px;
+        }
+
+        .add-tag button:hover {
+            background-color: #2e9c7a;
+        }
+    </style>
     <title> Dashboard | DevSync </title>
 </head>
 
@@ -36,13 +61,13 @@
         </div>
 
         <div class="sidebar">
-            <a href="#" class="active">
+            <a href="/DevSync/admin" >
                     <span class="material-icons-sharp">
                         dashboard
                     </span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="cruduser?action=listAll">
+            <a href="/DevSync/cruduser?action=listAll" >
                     <span class="material-icons-sharp">
                         person_outline
                     </span>
@@ -54,7 +79,6 @@
                     </span>
                 <h3>Tags</h3>
             </a>
-
             <a href="/DevSync/crudtask?action=listAll">
                     <span class="material-icons-sharp">
                          receipt_long
@@ -62,7 +86,7 @@
                 <h3>Tasks</h3>
             </a>
 
-            <a href="/DevSync/UsersRequest?action=not-accepted">
+            <a href="/DevSync/UsersRequest?action=not-accepted" class="active">
                     <span class="material-icons-sharp">
                         mail_outline
                     </span>
@@ -75,13 +99,14 @@
                     </span>
                 <h3>Refused Req</h3>
             </a>
-            <a href="/DevSync/usersAchievements">
+
+            <a href="#">
                     <span class="material-icons-sharp">
                         settings
                     </span>
                 <h3>Settings</h3>
             </a>
-            <a href="/DevSync/logout    ">
+            <a href="/DevSync/logout">
                     <span class="material-icons-sharp">
                         logout
                     </span>
@@ -91,118 +116,53 @@
     </aside>
     <!-- End of Sidebar Section -->
 
-    <!-- Main Content -->
-
     <main>
-        <h1>Dashboard</h1>
-        <!-- Analyses -->
-        <div class="analyse">
-            <div class="sales">
-                <div class="status">
-                    <div class="info">
-                        <h3>Active Users</h3>
-                        <h1>$65,024</h1>
-                    </div>
-                    <div class="progresss">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="percentage">
-                            <p>+81%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="visits">
-                <div class="status">
-                    <div class="info">
-                        <h3>Total Tasks</h3>
-                        <h1>24,981</h1>
-                    </div>
-                    <div class="progresss">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="percentage">
-                            <p>-48%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="searches">
-                <div class="status">
-                    <div class="info">
-                        <h3>Token Usage</h3>
-                        <h1>14,147</h1>
-                    </div>
-                    <div class="progresss">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="percentage">
-                            <p>+21%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End of Analyses -->
-
-        <!-- New Users Section -->
-        <div class="new-users">
-            <h2>Recent Managers</h2>
-            <div class="user-list">
-                <%
-                    List<User> recentUsers = (List<User>) request.getAttribute("recentUsers");
-                    if (recentUsers == null || recentUsers.isEmpty()) {
-                %>
-                <p>No user found</p>
-                <%
-                } else {
-                    for (User recentUser : recentUsers) {
-                %>
-                <div class="user">
-                    <img src="img/profile.png"> <!-- Add actual image path -->
-                    <h2><%= recentUser.getFirstName() %> <%= recentUser.getLastName() %></h2>
-                    <p><%= recentUser.getEmail() %></p>
-                </div>
-                <%
-                        }
-                    }
-                %>
-                <div class="user">
-                    <img src="img/plus.png">
-                    <h2>More</h2>
-                    <a href="cruduser?action=add">New Artists</a>
-                </div>
-            </div>
-        </div>
+        <h1>Requests</h1>
 
 
-        <!-- End of New Users Section -->
-
-        <!-- Recent Orders Table -->
         <div class="recent-orders">
-            <h2>Recent Tasks</h2>
+            <h2>All Requests</h2>
             <table>
                 <thead>
                 <tr>
-                    <th>Task Name</th>
+                    <th>Task Title</th>
                     <th>User Name</th>
-                    <th>Deadline</th>
-                    <th>Status</th>
-                    <th></th>
+                    <th>Token Type</th>
+                    <th>Request Created At</th>
+
                 </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                <%
+                    List<Request> requests = (List<Request>) request.getAttribute("requests");
+                    if (requests != null && !requests.isEmpty()) {
+                        for (Request req : requests) {
+                %>
+                <tr>
+                    <td><%= req.getTask().getTitle() %></td>
+                    <td><%= req.getUser().getUsername() %></td>
+                    <td><%= req.getTokenType() %></td>
+                    <td><%= req.getTimestamp() %></td>
+
+                    <td><a href="UsersRequest?id=<%= req.getId() %>" style="color: orange">View Details</a></td>
+
+
+                </tr>
+                <%
+                    }
+                } else {
+                %>
+                <tr>
+                    <td colspan="5">No requests available.</td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
             </table>
-            <a href="#">Show All</a>
         </div>
-        <!-- End of Recent Orders -->
 
     </main>
-
-    <!-- End of Main Content -->
 
     <!-- Right Section -->
     <div class="right-section">

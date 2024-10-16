@@ -17,8 +17,11 @@ import org.youcode.DevSync.domain.entities.Task;
 import org.youcode.DevSync.domain.entities.User;
 import org.youcode.DevSync.domain.enums.StatusTask;
 import org.youcode.DevSync.domain.enums.TokenType;
+import org.youcode.DevSync.domain.exceptions.TaskNotFoundException;
 import org.youcode.DevSync.services.TaskService;
 import org.youcode.DevSync.services.RequestService;
+import org.youcode.DevSync.validators.RequestValidator;
+import org.youcode.DevSync.validators.TaskValidator;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -35,6 +38,9 @@ public class TaskServlet extends HttpServlet {
     private TokenManagerDAO tokenManagerDAO;
     private TaskService taskService;
     private RequestService requestService;
+    private RequestValidator validator;
+    private TaskValidator taskvalidator;
+
 
     @Override
     public void init() throws ServletException {
@@ -42,9 +48,14 @@ public class TaskServlet extends HttpServlet {
         tagDAO = new TagDAOImpl();
         requestDAO = new RequestDAOImpl();
         tokenManagerDAO = new TokenManagerDAOImpl();
-        taskService = new TaskService(taskDAO, tokenManagerDAO, requestDAO);
-        requestService = new RequestService(requestDAO); // Initialize RequestService
+
+        validator = new RequestValidator();
+
+        taskvalidator = new TaskValidator();
+        taskService = new TaskService(taskDAO, tokenManagerDAO, requestDAO,taskvalidator);
+        requestService = new RequestService(requestDAO, tokenManagerDAO, validator);// Pass TokenManagerDAO to RequestService
     }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -146,6 +157,8 @@ public class TaskServlet extends HttpServlet {
                 request.setAttribute("error", "Invalid task ID format.");
             } catch (RuntimeException e) {
                 request.setAttribute("error", e.getMessage());
+            } catch (TaskNotFoundException e) {
+                throw new RuntimeException(e);
             }
         } else {
             request.setAttribute("error", "You must be logged in to request deletion.");

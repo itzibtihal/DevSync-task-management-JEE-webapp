@@ -1,5 +1,7 @@
 package org.youcode.DevSync;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.youcode.DevSync.dao.impl.RequestDAOImpl;
 import org.youcode.DevSync.dao.impl.TaskDAOImpl;
 import org.youcode.DevSync.dao.impl.UserDAOImpl;
@@ -14,6 +16,7 @@ import org.youcode.DevSync.services.RequestService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,38 +76,24 @@ public class Main {
 //            System.out.println("User or Task not found.");
 //        }
 
+        //EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("your-persistence-unit");
+        RequestDAO requestDAO = new RequestDAOImpl();
 
-        RequestDAOImpl requestDAO = new RequestDAOImpl();
-        UserDAOImpl userDAO = new UserDAOImpl(); // DAO for User
-        TaskDAOImpl taskDAO = new TaskDAOImpl(); // DAO for Task
+        // Call the method to test
+        List<Request> pendingRequests = requestDAO.findAllPendingRequests();
+        System.out.println("Pending requests found: " + pendingRequests.size());
 
-        // Initialize the RequestService with the RequestDAO
-        RequestService requestService = new RequestService(requestDAO);
-
-        // Fetch existing User and Task by ID
-        Optional<User> userOpt = userDAO.findById(UUID.fromString("c23ab367-733e-4744-a769-f53cb2d1989f"));
-        Optional<Task> taskOpt = taskDAO.findById(UUID.fromString("d8d6ae95-495f-4ef8-b517-54e3d27ec60e"));
-
-        if (userOpt.isPresent() && taskOpt.isPresent()) {
-            User user = userOpt.get();
-            Task task = taskOpt.get();
-
-            try {
-                // Create a new Request instance using the service
-                Request request = requestService.createRequest(user, task, TokenType.DAILY);
-
-                // Confirm the insert
-                System.out.println("Request inserted successfully with ID: " + request.getId());
-
-                // Example: Count requests by user and date
-               // int count = requestService.countUsedTokensToday(user, TokenType.DAILY); // Assuming this is a public method in RequestService
-               // System.out.println("Number of requests today: " + count);
-            } catch (IllegalArgumentException | IllegalStateException e) {
-                System.out.println("Error while creating request: " + e.getMessage());
-            }
-        } else {
-            System.out.println("User or Task not found.");
+        // Optionally print details of found requests
+        for (Request request : pendingRequests) {
+            System.out.println("Request ID: " + request.getId() +
+                    ", Response Deadline: " + request.getResponseDeadline() +
+                    ", Tokens Granted: " + request.isTokensGranted() +
+                    ", Status: " + request.getStatus());
         }
+
+
+
+
 
     }
 }
