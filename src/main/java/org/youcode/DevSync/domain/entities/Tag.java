@@ -27,4 +27,10 @@ public class Tag {
     public Tag() {
         this.id = UUID.randomUUID();
     }
+
+
+    public Tag(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

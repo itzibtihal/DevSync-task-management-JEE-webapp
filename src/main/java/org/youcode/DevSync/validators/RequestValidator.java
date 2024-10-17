@@ -34,9 +34,10 @@ public class RequestValidator {
     }
 
     public void validateRequestId(Long requestId) {
-        if (requestId == null || requestId <= 0) {
-            throw new InvalidRequestIdException("Invalid request ID.");
+        if (requestId == null) {
+            throw new InvalidRequestException("Invalid request ID");
         }
+        // Add any additional validation logic if needed
     }
 
     public void validateStatus(RequestStatus status) {
