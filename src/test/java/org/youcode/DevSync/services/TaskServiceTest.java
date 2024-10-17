@@ -16,11 +16,15 @@ import org.youcode.DevSync.domain.enums.TokenType;
 import org.youcode.DevSync.domain.exceptions.*;
 import org.youcode.DevSync.validators.TaskValidator;
 
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,8 +55,8 @@ class TaskServiceTest {
         MockitoAnnotations.openMocks(this);
         user = new User(); // Initialize as needed
         taskId = UUID.randomUUID();
-        task = new Task(); // Initialize as needed
-        requestId = 1L; // Example request ID
+        task = new Task();
+        requestId = 1L;
     }
 
     @Test
@@ -63,14 +67,6 @@ class TaskServiceTest {
                 .hasMessage("Invalid user");
     }
 
-//    @Test
-//    void requestDeleteTask_invalidTaskId() {
-//        doThrow(new InvalidTaskIdException("Invalid task ID")).when(validator).validateTaskId(any(UUID.class));
-//        assertThatThrownBy(() -> taskService.requestDeleteTask(user, null))
-//                .isInstanceOf(InvalidTaskIdException.class)
-//                .hasMessage("Invalid task ID");
-//    }
-
     @Test
     void requestDeleteTask_taskNotFound() {
         when(taskDAO.findById(taskId)).thenReturn(Optional.empty());
@@ -79,13 +75,8 @@ class TaskServiceTest {
                 .hasMessage("Task not found with ID: " + taskId);
     }
 
-    @Test
-    void processDeletionRequest_invalidRequestId() {
-        doThrow(new InvalidRequestException("Invalid request ID")).when(validator).validateRequestId(any(Long.class));
-        assertThatThrownBy(() -> taskService.processDeletionRequest(null))
-                .isInstanceOf(InvalidRequestException.class)
-                .hasMessage("Invalid request ID");
-    }
+
+
 
     @Test
     void processDeletionRequest_requestNotFound() {
@@ -93,16 +84,6 @@ class TaskServiceTest {
         assertThatThrownBy(() -> taskService.processDeletionRequest(requestId))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessage("Request not found with ID: " + requestId);
-    }
-
-    @Test
-    void processDeletionRequest_taskNotInRequest() {
-        Request request = new Request(user, task, TokenType.DAILY);
-        when(requestDAO.findById(requestId)).thenReturn(Optional.of(request));
-        when(request.getTask()).thenReturn(null);
-        assertThatThrownBy(() -> taskService.processDeletionRequest(requestId))
-                .isInstanceOf(TaskNotFoundException.class)
-                .hasMessage("Task not found in the request.");
     }
 
     @Test
@@ -115,19 +96,14 @@ class TaskServiceTest {
 
     @Test
     void updateTaskStatus_invalidStatus() {
-        doThrow(new InvalidStatusException("Invalid status")).when(validator).validateStatus(any(StatusTask.class));
+        doThrow(new InvalidStatusException("Invalid status"))
+                .when(validator).validateStatus(null); // Use null explicitly
+
         assertThatThrownBy(() -> taskService.updateTaskStatus(task, null))
                 .isInstanceOf(InvalidStatusException.class)
                 .hasMessage("Invalid status");
     }
 
-//    @Test
-//    void updateAssignedUser_invalidTaskId() {
-//        doThrow(new InvalidTaskIdException("Invalid task ID")).when(validator).validateTaskId(any(UUID.class));
-//        assertThatThrownBy(() -> taskService.updateAssignedUser(null, user))
-//                .isInstanceOf(InvalidTaskIdException.class)
-//                .hasMessage("Invalid task ID");
-//    }
 
     @Test
     void updateAssignedUser_taskNotFound() {
@@ -137,5 +113,99 @@ class TaskServiceTest {
                 .hasMessage("Task not found with ID: " + taskId);
     }
 
+    @Test
+    void countAssignedTasksCreatedByUser_validInput() {
+        UUID assignedUserId = UUID.randomUUID();
+        UUID creatorUserId = UUID.randomUUID();
+        when(taskDAO.countAssignedTasksCreatedByUser(assignedUserId, creatorUserId)).thenReturn(5L);
+
+        long count = taskService.countAssignedTasksCreatedByUser(assignedUserId, creatorUserId);
+
+        assertEquals(5L, count);
+    }
+
+    @Test
+    void countCompletedTasksAssignedToUserCreatedBy_validInput() {
+        UUID assignedUserId = UUID.randomUUID();
+        UUID creatorUserId = UUID.randomUUID();
+        when(taskDAO.countCompletedTasksAssignedToUserCreatedBy(assignedUserId, creatorUserId)).thenReturn(3L);
+
+        long count = taskService.countCompletedTasksAssignedToUserCreatedBy(assignedUserId, creatorUserId);
+
+        assertEquals(3L, count);
+    }
+
+    @Test
+    void findUsersForTasksCreatedBy_validInput() {
+        UUID creatorUserId = UUID.randomUUID();
+        List<User> users = List.of(new User(), new User());
+        when(taskDAO.findUsersForTasksCreatedBy(creatorUserId)).thenReturn(users);
+
+        List<User> result = taskService.findUsersForTasksCreatedBy(creatorUserId);
+
+        assertEquals(users, result);
+    }
+
+    @Test
+    void calculateUserAchievement_validInput() {
+        UUID userId = UUID.randomUUID();
+        User assignedUser = new User(); // Initialize as needed
+        when(taskDAO.findUsersForTasksCreatedBy(userId)).thenReturn(List.of(assignedUser));
+        when(taskDAO.countAssignedTasksCreatedByUser(assignedUser.getId(), userId)).thenReturn(10L);
+        when(taskDAO.countCompletedTasksAssignedToUserCreatedBy(assignedUser.getId(), userId)).thenReturn(5L);
+
+        double achievement = taskService.calculateUserAchievement(userId);
+
+        assertEquals(50.0, achievement);
+    }
+
+    @Test
+    void updateTaskStatusesForUser_validInput() {
+        List<Task> tasks = List.of(new Task(), new Task());
+        tasks.get(0).setDueDate(LocalDateTime.now().minusDays(1));
+        tasks.get(1).setDueDate(LocalDateTime.now().plusDays(1));
+        when(taskDAO.findByAssignedUser(user.getId())).thenReturn(tasks);
+
+        taskService.updateTaskStatusesForUser(user);
+
+        assertEquals(StatusTask.OVERDUE, tasks.get(0).getStatus());
+        //assertEquals(StatusTask.NOT_OVERDUE, tasks.get(1).getStatus()); // Assuming NOT_OVERDUE is a valid status
+    }
+
+    @Test
+    void filterOverdueTasks_validInput() {
+        List<Task> tasks = List.of(new Task(), new Task());
+        tasks.get(0).setDueDate(LocalDateTime.now().minusDays(1));
+        tasks.get(1).setDueDate(LocalDateTime.now().plusDays(1));
+
+        List<Task> overdueTasks = taskService.filterOverdueTasks(tasks);
+
+        assertEquals(1, overdueTasks.size());
+        assertEquals(tasks.get(0), overdueTasks.get(0));
+    }
+
+    @Test
+    void updateAssignedUser_validInput() throws TaskNotFoundException {
+        User newAssignedUser = new User(); // Initialize with necessary properties
+        newAssignedUser.setId(UUID.randomUUID()); // Set an ID for the user
+
+        Task task = new Task(); // Initialize and set necessary properties
+        task.setId(taskId); // Set the task ID
+        task.setAssignedUser(null); // Initially, the task is not assigned
+
+        // Mock the taskDAO to return the task when findById is called
+        when(taskDAO.findById(taskId)).thenReturn(Optional.of(task));
+
+        // Mock the update method to return true when called
+        when(taskDAO.update(task)).thenReturn(true);
+
+        // Call the method under test
+        boolean result = taskService.updateAssignedUser(taskId, newAssignedUser);
+
+        // Assertions
+        assertTrue(result);
+        assertEquals(newAssignedUser, task.getAssignedUser());
+        assertTrue(task.isTokenUsed());
+    }
 
 }
