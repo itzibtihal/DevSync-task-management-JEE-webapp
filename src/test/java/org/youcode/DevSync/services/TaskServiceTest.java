@@ -169,7 +169,7 @@ class TaskServiceTest {
         taskService.updateTaskStatusesForUser(user);
 
         assertEquals(StatusTask.OVERDUE, tasks.get(0).getStatus());
-        //assertEquals(StatusTask.NOT_OVERDUE, tasks.get(1).getStatus()); // Assuming NOT_OVERDUE is a valid status
+        //assertEquals(StatusTask.NOT_OVERDUE, tasks.get(1).getStatus());
     }
 
     @Test
@@ -186,23 +186,21 @@ class TaskServiceTest {
 
     @Test
     void updateAssignedUser_validInput() throws TaskNotFoundException {
-        User newAssignedUser = new User(); // Initialize with necessary properties
-        newAssignedUser.setId(UUID.randomUUID()); // Set an ID for the user
+        User newAssignedUser = new User();
+        newAssignedUser.setId(UUID.randomUUID());
 
-        Task task = new Task(); // Initialize and set necessary properties
-        task.setId(taskId); // Set the task ID
-        task.setAssignedUser(null); // Initially, the task is not assigned
+        Task task = new Task();
+        task.setId(taskId);
+        task.setAssignedUser(null);
 
-        // Mock the taskDAO to return the task when findById is called
+
         when(taskDAO.findById(taskId)).thenReturn(Optional.of(task));
 
-        // Mock the update method to return true when called
         when(taskDAO.update(task)).thenReturn(true);
 
-        // Call the method under test
         boolean result = taskService.updateAssignedUser(taskId, newAssignedUser);
 
-        // Assertions
+
         assertTrue(result);
         assertEquals(newAssignedUser, task.getAssignedUser());
         assertTrue(task.isTokenUsed());
